@@ -11,8 +11,9 @@ from cleaner import cleanall
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 #loading the dataframes
-train_df = pd.read_csv() #as I'm not sharing my own dataset, you'll need to insert your dataset here for the whole script to work
-test_df = pd.read_csv()
+#as I'm not sharing my own dataset, you'll need to insert your dataset here for the whole thing to work
+train_df = pd.read_csv('../lib/train_example.csv')
+test_df = pd.read_csv('../lib/test_example.csv')
 
 #combining dataframes into one general dataframe
 combined_df = train_df.append(test_df,ignore_index=True,sort=True)
