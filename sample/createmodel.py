@@ -2,7 +2,6 @@
 import re
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import string
 import warnings
 from stempel import StempelStemmer
@@ -42,57 +41,55 @@ image_colors = ImageColorGenerator(Mask)
 wc = WordCloud(background_color='white', height=1500, width=4000,mask=Mask).generate(negative)
 wc.to_file('wordcloud.png')
 
-#to extract features from the tweets, we're going to use Bag of Words method
-from sklearn.feature_extraction.text import CountVectorizer
+#to extract features from the tweets, we're going to use TF-IDF method
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-bow_vectorizer = CountVectorizer(max_df=0.90, min_df=2, max_features=1000, stop_words='english')
+tfidf = TfidfVectorizer(max_df=0.90, min_df=2,max_features=1000)
 
-bow = bow_vectorizer.fit_transform(combined_df['Tidy_Tweets'])
+tfidf_matrix = tfidf.fit_transform(combined_df['Tidy_Tweets'])
 
-bow_df = pd.DataFrame(bow.todense())
+df_tfidf = pd.DataFrame(tfidf_matrix.todense())
 
-bow_train = bow[:1249]
-
-bow_train.todense()
+train_tfidf_matrix = tfidf_matrix[:1249]
 
 # Import train_test_split function
 from sklearn.model_selection import train_test_split
 
 # Split dataset into training set and test set
-X_train, X_test, y_train, y_test = train_test_split(bow_train,train_df['label'],test_size=0.3,random_state=109)
-X_train=X_train.toarray()
-X_test=X_test.toarray()
+X_train, X_valid, y_train, y_valid = train_test_split(train_tfidf_matrix,train_df['label'],test_size=0.3,random_state=17)
 
-#since there isn't too much data to process and the whole thing is rather simple, we use Naive Bayes Algorithm for classification
-#Import Gaussian Naive Bayes model
-from sklearn.naive_bayes import GaussianNB
+#we use Logistic Regression for classification, because it provides fairly good accuracy
+#Import Logistic Regression model
+from sklearn.linear_model import LogisticRegression
+Log_Reg = LogisticRegression(random_state=0,solver='lbfgs')
 
-#Create a Gaussian Classifier
-gnb = GaussianNB()
+Log_Reg.fit(X_train,y_train)
 
-#Train the model using the training sets
-gnb.fit(X_train, y_train)
+prediction_tfidf = Log_Reg.predict_proba(X_valid)
 
-#Predict the response for test dataset
-y_pred = gnb.predict(X_test)
+prediction_int = prediction_tfidf[:,1]>=0.4
+
+prediction_int = prediction_int.astype(np.int)
 
 #Import scikit-learn metrics module for accuracy calculation
 from sklearn import metrics
 
-print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+print("Accuracy:",metrics.accuracy_score(y_valid, prediction_int))
 
-test_final = bow[:19573]
-test_final = test_final.toarray()
+test_tfidf = tfidf_matrix[:19572]
+test_pred = Log_Reg.predict_proba(test_tfidf)
 
-test_pred = gnb.predict(test_final)
+test_pred_int = test_pred[:,1] >= 0.4
+test_pred_int = test_pred_int.astype(np.int)
 
-results_df = pd.DataFrame({'label': test_pred})
+results_df = pd.DataFrame({'label': test_pred_int})
 
 submission = results_df[['label']]
 submission['tweet'] = test_df['Text']
-#some of the cells in a 'tweet' column appear to be empty for some weird reason, so we need to erase the rows which contain empty cells
+#some of the cells in a 'tweet' column are empty, because tweets in a train dataframe were also in a test dataframe, and now the duplicats are gone but labels for them are not
+#the reason why we didn't get rid of the duplicates earlier is that the function in pandas for erasing duplicates is defective and for some reason deletes more rows than it should
 submission.dropna(axis=0, how='any', thresh=None, subset=None, inplace=True)
+submission.info()
 submission.to_csv('result.csv', index=False, header=True)
 
-filename = 'model.sav'
-pickle.dump(gnb, open(filename, 'wb'))
+pickle.dump(Log_Reg, open('model.sav', 'wb'))

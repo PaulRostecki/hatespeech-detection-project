@@ -1,27 +1,39 @@
-#this code is not really working yet, just working on it
+#importing all the necessary libraries
 import pickle
-import re
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import string
-import warnings
 from cleaner import cleanall
-from stempel import StempelStemmer
 
+#importing the previously built model
 loaded_model = pickle.load(open('model.sav', 'rb'))
-sample = input("Enter the sentence: ")
 
-sample = cleanall(sample)
+#merging the given string with the training df, for TF-IDF to work and correctly interpret the data
+#as I'm not sharing my own dataset, you'll need to insert your dataset here for the whole thing to work
+sample = [input("Enter the sentence: ")]
+train_df = pd.read_csv('../lib/train_example.csv')
+input_df = pd.DataFrame(sample, columns = ['Text'])
+input_df['label'] = np.nan
+combined_df = train_df.append(input_df,ignore_index=True,sort=True)
 
-from sklearn.feature_extraction.text import CountVectorizer
-bow_vectorizer = CountVectorizer(max_df=1.0, min_df=1.0, max_features=1000)
-bow = bow_vectorizer.fit_transform(sample)
-bow_df = pd.DataFrame(bow.todense())
+#using a function imported from cleaner.py to clean, tokenize and stem the tweets
+cleanall(combined_df['Text'])
 
-result = int(loaded_model.predict(bow_df))
+#using TF-IDF method to extract features from the tweets
+from sklearn.feature_extraction.text import TfidfVectorizer
+tfidf = TfidfVectorizer(max_features=1000)
+df_matrix = tfidf.fit_transform(combined_df['Text'])
+df_matrix = pd.DataFrame(df_matrix.todense())
 
-if result == 1:
+#predicting the probability of the text being a hatespeech
+result = loaded_model.predict_proba(df_matrix)
+
+samplenumber = len(result)-1
+
+#if the model is at least 50% sure that may be a hatespeech, it labels it as hatespeech
+result = result[:,1] >= 0.5
+
+if result[samplenumber] == 1:
     print('This text may potentially be hatespeech.')
 else:
     print('This text is most probably not hatespeech.')
