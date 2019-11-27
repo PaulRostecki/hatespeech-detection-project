@@ -14,7 +14,7 @@ sample = [input("Enter the sentence: ")]
 train_df = pd.read_csv('../lib/train_example.csv')
 input_df = pd.DataFrame(sample, columns = ['Text'])
 input_df['label'] = np.nan
-combined_df = train_df.append(input_df,ignore_index=True,sort=True)
+combined_df = train_df.append(input_df,ignore_index=True,sort=False)
 
 #using a function imported from cleaner.py to clean, tokenize and stem the tweets
 cleanall(combined_df['Text'])
@@ -31,7 +31,7 @@ result = loaded_model.predict_proba(df_matrix)
 samplenumber = len(result)-1
 
 #if the model is at least 50% sure that may be a hatespeech, it labels it as hatespeech
-result = result[:,1] >= 0.5
+result = result[:,1] >= 0.4
 
 if result[samplenumber] == 1:
     print('This text may potentially be hatespeech.')
