@@ -30,7 +30,7 @@ result = loaded_model.predict_proba(df_matrix)
 
 samplenumber = len(result)-1
 
-#if the model is at least 50% sure that may be a hatespeech, it labels it as hatespeech
+#if the model is at least 40% sure that may be a hatespeech, it labels it as hatespeech
 result = result[:,1] >= 0.4
 
 if result[samplenumber] == 1:
