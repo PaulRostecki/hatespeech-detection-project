@@ -2,7 +2,7 @@
 ### Intro
 Hatespeech Detection project is aimed to analyze and detect hatespeech written in Polish language. The repository contains my trained model, as well as the script which generates a model and the script that predicts if the text is hatespeech or not, based on the given model. Unfortunately, it does not contain any datasets, so you need to insert your own data to make everything work. All the current scripts that require the .csv datasets, refer to the example files.
 
-It's also worth mentioning, that the code and the model contained in that repository are actually the basis for the [MakeLoveNotHate](http://www.makelovenothate.ml/) webapp, which was submitted to the final part of the Intel AI4Y Project.
+It's also worth mentioning, that the code and the model contained in that repository are actually the basis for the [MakeLoveNotHate](https://makelovenothate.herokuapp.com) webapp, which was submitted to the final part of the Intel AI4Y Project.
 
 ## The repository consists of:
 
@@ -19,7 +19,7 @@ A script, imported by the other scripts, that cleans the text in the dataset. It
 ##### Important note!
 PyStempel, a stemmer used in the cleaner.py is made to work with Polish language and won't work with other languages. If you wish to analyze texts from another languages, you need to import another stemmer.
 
-#### 4. prediction.py 
+#### 4. prediction.py
 A script that takes input from a user in a form of a sentence, then attaches it into the dataset, cleans it, and gives a prediction based on a loaded model, trained earlier in `createmodel.py`. Note that you need to use the whole dataset in the process, as the TF-IDF method applies weights basing on the frequency in the whole document (or dataset in this case).
 
 ## Sources:
