@@ -2,7 +2,7 @@
 ### Intro
 Hatespeech Detection project is aimed to analyze and detect hatespeech written in Polish language. The repository contains my trained model, as well as the script which generates a model and the script that predicts if the text is hatespeech or not, based on the given model. Unfortunately, it does not contain any datasets, so you need to insert your own data to make everything work. All the current scripts that require the .csv datasets, refer to the example files.
 
-It's also worth mentioning, that the code and the model contained in that repository are actually the basis for the [MakeLoveNotHate](https://makelovenothate.herokuapp.com) webapp, which was submitted to the final part of the Intel AI4Y Project.
+It's also worth mentioning, that the code and the model contained in that repository are actually the basis for the [MakeLoveNotHate](https://makelovenothate.herokuapp.com) webapp, which was submitted to the final part of the [Intel AI4Y Program](https://edulab.pcss.pl/ai4youth).
 
 ## The repository consists of:
 
