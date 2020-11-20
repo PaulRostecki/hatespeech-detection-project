@@ -7,9 +7,9 @@ It's also worth mentioning, that the code and the model contained in that reposi
 ## The repository consists of:
 
 #### 1. folder *lib*
-A folder that contains all the databases (`train_example.csv`, `test_example.csv`) and `polishstopwords.txt`, which contains stopwords that are later erased from the entries in the dataset.
+A folder that contains all the datasets (`train_example.csv`, `test_example.csv`) and `polishstopwords.txt`, which contains stopwords that are later erased from the entries in the dataset.
 
-As the topic of hatespeech is very fragile and controversial, I'm not sharing my own datasets used in the process. The .csv files in the folder are empty, and show only the general form of the database that you should follow when building your own base. All the texts in the train dataset are labeled as either 0 (neutral/positive text) or 1 (negative text/hatespeech), while in test dataset, the column `label` remains empty.
+As the topic of hatespeech is very fragile and controversial, I'm not sharing my own datasets used in the process. The .csv files in the folder are empty, and show only the general form of the dataset that you should follow when building your own base. All the texts in the train dataset are labeled as either 0 (neutral/positive text) or 1 (negative text/hatespeech), while in test dataset, the column `label` remains empty.
 
 #### 2. createmodel.py
 A script that creates a model based on the data from the `.csv` files. The text is converted and weighted using the [TF-IDF](https://en.wikipedia.org/wiki/Tf–idf) method, and then the model is trained based on the [Logistic Regression](https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html) classification algorithm. The script also makes a wordcloud with the most used negative words and predicts the labels for the whole test dataset. It also saves the labeled dataset, the wordcloud in `.png` and a trained model.
